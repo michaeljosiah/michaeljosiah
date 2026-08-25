@@ -34,6 +34,16 @@ const state = {
   journalCategory: "all"
 };
 
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function syncHeroVideo(route = currentRoute()) {
+  const video = document.querySelector("[data-hero-video]");
+  const shouldPlay = route === "home" && window.innerWidth > 900 && !reducedMotion.matches;
+
+  if (shouldPlay) video.play().catch(() => {});
+  else video.pause();
+}
+
 function currentRoute() {
   const route = location.hash.replace(/^#\/?/, "").split("/")[0].toLowerCase();
   return routes.has(route) ? route : "home";
@@ -62,6 +72,7 @@ function showRoute(route, shouldScroll = true) {
   const labels = { home: "Engineer. Creator. Technologist.", projects: "Projects", about: "About", journal: "Journal", contact: "Contact" };
   document.title = `Michael Josiah | ${labels[route]}`;
   closeMenu();
+  syncHeroVideo(route);
   if (shouldScroll) window.scrollTo({ top: 0, behavior: "auto" });
 }
 
@@ -170,7 +181,9 @@ document.querySelector("[data-subscribe-form]").addEventListener("submit", (even
 window.addEventListener("hashchange", () => showRoute(currentRoute()));
 window.addEventListener("resize", () => {
   if (window.innerWidth > 900) closeMenu();
+  syncHeroVideo();
 });
+reducedMotion.addEventListener("change", () => syncHeroVideo());
 
 renderProjects();
 filterJournal();
