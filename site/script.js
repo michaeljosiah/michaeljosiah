@@ -1,13 +1,22 @@
-const routes = new Set(["home", "projects", "about", "journal", "contact"]);
+const projectRoutes = {
+  "projects/awaken-embers-of-the-fallen": "awaken-detail",
+  "projects/aonik": "aonik-detail",
+  "projects/arke-studio": "arke-detail"
+};
+const routes = {
+  home: { file: "pages/home.html", title: "Engineer. Creator. Technologist.", navigation: "home" },
+  projects: { file: "pages/projects.html", title: "Projects", navigation: "projects" },
+  "awaken-detail": { file: "pages/projects/awaken-embers-of-the-fallen.html", title: "Awaken - Embers of the Fallen", navigation: "projects" },
+  "aonik-detail": { file: "pages/projects/aonik.html", title: "Aonik Intelligence Platform", navigation: "projects" },
+  "arke-detail": { file: "pages/projects/arke-studio.html", title: "Arke Studio", navigation: "projects" },
+  about: { file: "pages/about.html", title: "About", navigation: "about" },
+  journal: { file: "pages/journal.html", title: "Journal", navigation: "journal" },
+  contact: { file: "pages/contact.html", title: "Contact", navigation: "contact" }
+};
+const pageCache = new Map();
+let navigationRequest = 0;
 
-const projects = [
-  { title: "Awaken - Embers of the Fallen", category: "story", label: "Story world", image: "img-story-world.png", icon: "feather", order: 1, date: 20250528, description: "A cinematic dark fantasy series exploring the hidden war between Elysians, humanity and dimensions beyond." },
-  { title: "Arke Studio", category: "story", label: "Story platform", image: "img-studio-desk.png", icon: "compass", order: 2, date: 20250520, description: "A creative platform for writers and creators to build stories, worlds and immersive narratives together." },
-  { title: "Aonik", category: "ai", label: "AI platform", image: "img-ai-lattice.png", icon: "cube", order: 3, date: 20250518, description: "AI platforms and agents for the future of business in an intelligent, agentic world." },
-  { title: "Nexus Core", category: "engineering", label: "Engineering", image: "img-code-screens.png", icon: "layers", order: 4, date: 20250512, description: "Backend infrastructure and mission systems for real-time data, security and operations at scale." },
-  { title: "MJ Dev Suite", category: "tools", label: "Tools & systems", image: "img-code-screens.png", icon: "code", order: 5, date: 20250508, description: "A collection of developer tools, libraries and systems designed to accelerate productivity and innovation." },
-  { title: "Project Origin", category: "experiments", label: "Experiment", image: "img-horizon-ring.png", icon: "target", order: 6, date: 20250502, description: "Exploring the boundaries of AI, storytelling and interactive media through experimental prototypes." }
-];
+let projects = [];
 
 const categoryNames = {
   all: "All projects",
@@ -35,18 +44,32 @@ const state = {
 };
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const themeToggle = document.querySelector("[data-theme-toggle]");
+
+function applyTheme(theme) {
+  const isLight = theme === "light";
+  document.documentElement.dataset.theme = isLight ? "light" : "dark";
+  document.querySelector('meta[name="theme-color"]').content = isLight ? "#f5f2eb" : "#03060a";
+  themeToggle.setAttribute("aria-label", `Switch to ${isLight ? "dark" : "light"} theme`);
+  themeToggle.title = `Switch to ${isLight ? "dark" : "light"} theme`;
+  themeToggle.querySelector("use").setAttribute("href", isLight ? "#icon-moon" : "#icon-sun");
+}
+
+applyTheme(document.documentElement.dataset.theme);
 
 function syncHeroVideo(route = currentRoute()) {
   const video = document.querySelector("[data-hero-video]");
   const shouldPlay = route === "home" && window.innerWidth > 900 && !reducedMotion.matches;
 
-  if (shouldPlay) video.play().catch(() => {});
-  else video.pause();
+  if (shouldPlay) video?.play().catch(() => {});
+  else video?.pause();
 }
 
 function currentRoute() {
-  const route = location.hash.replace(/^#\/?/, "").split("/")[0].toLowerCase();
-  return routes.has(route) ? route : "home";
+  const path = location.hash.replace(/^#\/?/, "").replace(/\/$/, "").toLowerCase();
+  if (projectRoutes[path]) return projectRoutes[path];
+  const route = path.split("/")[0];
+  return routes[route] ? route : "home";
 }
 
 function closeMenu() {
@@ -59,34 +82,74 @@ function closeMenu() {
   document.body.classList.remove("menu-open");
 }
 
-function showRoute(route, shouldScroll = true) {
-  document.querySelectorAll("[data-page]").forEach((page) => {
-    page.hidden = page.dataset.page !== route;
-  });
-
+function updateNavigation(route) {
   document.querySelectorAll("[data-route-link]").forEach((link) => {
-    if (link.dataset.routeLink === route) link.setAttribute("aria-current", "page");
+    if (link.dataset.routeLink === routes[route].navigation) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
+}
 
-  const labels = { home: "Engineer. Creator. Technologist.", projects: "Projects", about: "About", journal: "Journal", contact: "Contact" };
-  document.title = `Michael Josiah | ${labels[route]}`;
-  closeMenu();
+async function initializePage(route) {
+  if (route === "projects") {
+    state.projectCategory = "all";
+    state.projectSort = "featured";
+    const response = await fetch("data/projects.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`Project data request failed with status ${response.status}`);
+    projects = await response.json();
+    renderProjects();
+  }
+
+  if (route === "journal") {
+    state.journalCategory = "all";
+    filterJournal();
+  }
+
   syncHeroVideo(route);
+}
+
+async function showRoute(route, shouldScroll = true) {
+  const request = ++navigationRequest;
+  const main = document.querySelector("#main-content");
+
+  updateNavigation(route);
+  document.body.dataset.route = route;
+  document.title = `Michael Josiah | ${routes[route].title}`;
+  closeMenu();
   if (shouldScroll) window.scrollTo({ top: 0, behavior: "auto" });
+
+  try {
+    let markup = pageCache.get(route);
+    if (!markup) {
+      const response = await fetch(routes[route].file);
+      if (!response.ok) throw new Error(`Page request failed with status ${response.status}`);
+      markup = await response.text();
+      pageCache.set(route, markup);
+    }
+
+    if (request !== navigationRequest) return;
+    main.innerHTML = markup;
+    await initializePage(route);
+  } catch (error) {
+    if (request !== navigationRequest) return;
+    main.innerHTML = `<section class="page-error"><h1>Page unavailable</h1><p>The requested page could not be loaded. Please try again.</p><a class="text-link" href="#/home">Return home</a></section>`;
+    console.error(error);
+  }
 }
 
 function projectCard(project) {
+  const href = project.href || "#/projects";
+  const externalAttributes = project.external ? ' target="_blank" rel="noopener noreferrer"' : "";
+  const linkLabel = project.external ? "View on GitHub" : "View project";
   return `
     <article class="project-card reveal" style="--card-tone:${categoryTones[project.category]}">
-      <div class="project-image" style="--image:url('../design/assets/${project.image}')">
+      <div class="project-image ${project.imageClass || ""}" style="--image:url('../design/assets/${project.image}');--image-position:${project.imagePosition || "center"}">
         <svg class="project-mark" aria-hidden="true"><use href="#icon-${project.icon}"/></svg>
       </div>
       <div class="card-body">
         <p class="eyebrow">${project.label}</p>
         <h3>${project.title}</h3>
         <p class="description">${project.description}</p>
-        <a class="text-link" href="#/contact" aria-label="Discuss ${project.title}">View project <svg><use href="#icon-arrow"/></svg></a>
+        <a class="text-link" href="${href}"${externalAttributes} aria-label="${linkLabel}: ${project.title}">${linkLabel} <svg><use href="#icon-arrow"/></svg></a>
       </div>
     </article>`;
 }
@@ -98,14 +161,22 @@ function renderProjects() {
   if (state.projectSort === "az") list.sort((a, b) => a.title.localeCompare(b.title));
   if (state.projectSort === "featured") list.sort((a, b) => a.order - b.order);
 
-  document.querySelector("[data-project-grid]").innerHTML = list.map(projectCard).join("");
+  const grid = document.querySelector("[data-project-grid]");
+  if (!grid) return;
+  grid.innerHTML = list.map(projectCard).join("");
+  document.querySelectorAll("[data-project-filters] button").forEach((button) => {
+    const count = button.dataset.category === "all" ? projects.length : projects.filter((project) => project.category === button.dataset.category).length;
+    button.querySelector("b").textContent = String(count);
+  });
   document.querySelector("[data-category-title]").textContent = categoryNames[state.projectCategory];
   document.querySelector("[data-project-count]").textContent = String(list.length);
   document.querySelector("[data-project-empty]").hidden = list.length !== 0;
 }
 
 function filterJournal() {
-  const query = document.querySelector("[data-journal-search]").value.trim().toLowerCase();
+  const search = document.querySelector("[data-journal-search]");
+  if (!search) return;
+  const query = search.value.trim().toLowerCase();
   let visibleCount = 0;
 
   document.querySelectorAll(".article-item").forEach((article) => {
@@ -117,6 +188,21 @@ function filterJournal() {
   });
 
   document.querySelector("[data-journal-empty]").hidden = visibleCount !== 0;
+}
+
+function selectGalleryImage(button) {
+  const stage = document.querySelector("[data-gallery-stage]");
+  document.querySelectorAll("[data-gallery-image]").forEach((thumbnail) => thumbnail.classList.toggle("is-active", thumbnail === button));
+  stage.src = button.dataset.galleryImage;
+  stage.alt = button.dataset.galleryAlt;
+}
+
+function moveGallery(direction) {
+  const thumbnails = [...document.querySelectorAll("[data-gallery-image]")];
+  const currentIndex = thumbnails.findIndex((thumbnail) => thumbnail.classList.contains("is-active"));
+  const nextIndex = (currentIndex + direction + thumbnails.length) % thumbnails.length;
+  selectGalleryImage(thumbnails[nextIndex]);
+  thumbnails[nextIndex].focus();
 }
 
 function submitForm(form, status, successMessage) {
@@ -141,41 +227,63 @@ document.querySelector("[data-menu-toggle]").addEventListener("click", (event) =
   document.body.classList.toggle("menu-open", opening);
 });
 
-document.querySelector("[data-project-filters]").addEventListener("click", (event) => {
+themeToggle.addEventListener("click", () => {
+  const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  applyTheme(theme);
+  try {
+    localStorage.setItem("mj-theme", theme);
+  } catch {}
+});
+
+document.querySelector("#main-content").addEventListener("click", (event) => {
   const button = event.target.closest("button[data-category]");
-  if (!button) return;
-  state.projectCategory = button.dataset.category;
-  document.querySelectorAll("[data-project-filters] button").forEach((item) => item.classList.toggle("is-active", item === button));
-  renderProjects();
-});
+  if (button) {
+    state.projectCategory = button.dataset.category;
+    document.querySelectorAll("[data-project-filters] button").forEach((item) => item.classList.toggle("is-active", item === button));
+    renderProjects();
+  }
 
-document.querySelector("[data-project-sort]").addEventListener("change", (event) => {
-  state.projectSort = event.target.value;
-  renderProjects();
-});
+  const thumbnail = event.target.closest("[data-gallery-image]");
+  if (thumbnail) selectGalleryImage(thumbnail);
 
-document.querySelector("[data-journal-filters]").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-filter]");
-  if (!button) return;
-  state.journalCategory = button.dataset.filter;
-  document.querySelectorAll("[data-journal-filters] button").forEach((item) => classListToggle(item, "is-active", item === button));
-  filterJournal();
+  if (event.target.closest("[data-gallery-previous]")) moveGallery(-1);
+  if (event.target.closest("[data-gallery-next]")) moveGallery(1);
+
+  const journalFilter = event.target.closest("button[data-filter]");
+  if (journalFilter) {
+    state.journalCategory = journalFilter.dataset.filter;
+    document.querySelectorAll("[data-journal-filters] button").forEach((item) => classListToggle(item, "is-active", item === journalFilter));
+    filterJournal();
+  }
 });
 
 function classListToggle(element, className, force) {
   element.classList.toggle(className, force);
 }
 
-document.querySelector("[data-journal-search]").addEventListener("input", filterJournal);
-
-document.querySelector("[data-contact-form]").addEventListener("submit", (event) => {
-  event.preventDefault();
-  submitForm(event.currentTarget, document.querySelector("[data-contact-status]"), "Thanks. Your message is ready to send once a form service is connected.");
+document.querySelector("#main-content").addEventListener("change", (event) => {
+  if (!event.target.matches("[data-project-sort]")) return;
+  state.projectSort = event.target.value;
+  renderProjects();
 });
 
-document.querySelector("[data-subscribe-form]").addEventListener("submit", (event) => {
-  event.preventDefault();
-  submitForm(event.currentTarget, document.querySelector("[data-subscribe-status]"), "You're on the list. Subscription delivery will be enabled soon.");
+document.querySelector("#main-content").addEventListener("input", (event) => {
+  if (event.target.matches("[data-journal-search]")) filterJournal();
+});
+
+document.querySelector("#main-content").addEventListener("submit", (event) => {
+  const contactForm = event.target.closest("[data-contact-form]");
+  const subscribeForm = event.target.closest("[data-subscribe-form]");
+
+  if (contactForm) {
+    event.preventDefault();
+    submitForm(contactForm, document.querySelector("[data-contact-status]"), "Thanks. Your message is ready to send once a form service is connected.");
+  }
+
+  if (subscribeForm) {
+    event.preventDefault();
+    submitForm(subscribeForm, document.querySelector("[data-subscribe-status]"), "You're on the list. Subscription delivery will be enabled soon.");
+  }
 });
 
 window.addEventListener("hashchange", () => showRoute(currentRoute()));
@@ -185,6 +293,4 @@ window.addEventListener("resize", () => {
 });
 reducedMotion.addEventListener("change", () => syncHeroVideo());
 
-renderProjects();
-filterJournal();
 showRoute(currentRoute(), false);

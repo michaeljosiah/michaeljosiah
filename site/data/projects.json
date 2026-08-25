@@ -1,0 +1,72 @@
+[
+  {
+    "title": "Awaken - Embers of the Fallen",
+    "category": "story",
+    "label": "Story world",
+    "image": "img-story-world.png",
+    "icon": "feather",
+    "href": "#/projects/awaken-embers-of-the-fallen",
+    "order": 1,
+    "date": 20250528,
+    "description": "A cinematic dark fantasy series exploring the hidden war between Elysians, humanity and dimensions beyond."
+  },
+  {
+    "title": "Arke Studio",
+    "category": "story",
+    "label": "Story platform",
+    "image": "arke-banner.png",
+    "icon": "compass",
+    "href": "#/projects/arke-studio",
+    "order": 2,
+    "date": 20250520,
+    "description": "An AI-native creative studio for building coherent worlds and developing every story within them."
+  },
+  {
+    "title": "Aonik",
+    "category": "ai",
+    "label": "AI platform",
+    "image": "aonik-banner.png",
+    "imagePosition": "right center",
+    "icon": "cube",
+    "href": "#/projects/aonik",
+    "order": 3,
+    "date": 20250518,
+    "description": "A modular intelligence platform for AI-native systems, agents and applications across life domains."
+  },
+  {
+    "title": "Nexus Core",
+    "category": "engineering",
+    "label": "Engineering",
+    "image": "img-code-screens.png",
+    "icon": "layers",
+    "order": 4,
+    "date": 20250512,
+    "description": "Backend infrastructure and mission systems for real-time data, security and operations at scale."
+  },
+  {
+    "title": "Arke Product Engineer",
+    "category": "tools",
+    "label": "Open-source delivery tool",
+    "image": "arke-product-engineer.png",
+    "imageClass": "arke-engineer-project-image",
+    "icon": "code",
+    "href": "https://github.com/michaeljosiah/Arke",
+    "external": true,
+    "order": 5,
+    "date": 20260628,
+    "description": "A specification-driven delivery tool for directing coding agents and keeping an accountable record of what ships."
+  },
+  {
+    "title": "Voxa",
+    "category": "tools",
+    "label": "Open-source framework",
+    "image": "voxa-logo.svg",
+    "imageClass": "voxa-project-image",
+    "icon": "code",
+    "href": "https://github.com/michaeljosiah/voxa",
+    "external": true,
+    "order": 6,
+    "date": 20260508,
+    "description": "A frame-based, real-time voice AI pipeline framework for .NET 10, with local and cloud speech providers."
+  }
+]
