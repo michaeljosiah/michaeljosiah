@@ -18,12 +18,6 @@ I merge imagination with engineering to create stories, platforms, and AI system
 - Exploring the intersection of engineering and storytelling
 - Designing technology with purpose and lasting impact
 
-## Portfolio
-
-The source for my portfolio website is in [`site/`](site/). Its visual system, reference mockups, reusable components, and original assets are documented in [`design/`](design/).
-
-The website is built with semantic HTML, CSS, and vanilla JavaScript. It includes responsive layouts, project and journal filtering, accessible navigation, and dependency-free client-side routing.
-
 ## Connect
 
 - [Portfolio](https://michaeljosiah.com)
