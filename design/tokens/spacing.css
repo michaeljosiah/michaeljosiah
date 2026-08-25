@@ -1,0 +1,34 @@
+:root{
+--sp-0:0;/* @kind spacing */--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;
+--sp-7:32px;--sp-8:40px;--sp-9:48px;--sp-10:64px;--sp-11:80px;--sp-12:112px;
+
+--gutter-card:24px;--gutter-grid:20px;--gutter-section:64px;
+--pad-card:20px;--pad-panel:24px;--pad-shell:32px;
+--max-content:1360px;--max-prose:560px;
+--rail-width:56px;--nav-height:68px;
+
+/* Radii — restrained. Panels are near-square; only pills are round. */
+--radius-none:0;--radius-xs:2px;--radius-sm:4px;--radius-md:6px;--radius-lg:8px;--radius-pill:999px;
+
+/* Borders */
+--bw-hairline:1px;--bw-accent:2px;--bw-rule:3px;
+
+/* Elevation — glow, not drop shadow */
+--shadow-card:0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px rgba(0,0,0,.45);
+--shadow-panel:0 16px 48px rgba(0,0,0,.55);
+--shadow-lift:0 12px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(232,163,61,.22);
+--glow-gold:0 0 24px rgba(232,163,61,.28);
+--glow-gold-strong:0 0 40px rgba(232,163,61,.45);
+--glow-teal:0 0 24px rgba(79,209,197,.25);
+
+/* Protection gradients over imagery */
+--scrim-left:linear-gradient(90deg,#03060A 0%,rgba(3,6,10,.92) 34%,rgba(3,6,10,.35) 68%,rgba(3,6,10,0) 100%);/* @kind other */
+--scrim-bottom:linear-gradient(180deg,rgba(3,6,10,0) 0%,rgba(3,6,10,.85) 72%,#03060A 100%);/* @kind other */
+--scrim-right:linear-gradient(270deg,#03060A 0%,rgba(3,6,10,.88) 46%,rgba(3,6,10,0) 100%);/* @kind other */
+--scrim-card:linear-gradient(180deg,rgba(3,6,10,.1) 0%,rgba(3,6,10,.55) 55%,rgba(3,6,10,.92) 100%);/* @kind other */
+
+/* Motion */
+--ease-out:cubic-bezier(.16,.84,.44,1);/* @kind other */
+--ease-in-out:cubic-bezier(.45,0,.25,1);/* @kind other */
+--dur-fast:140ms;/* @kind other */--dur-base:220ms;/* @kind other */--dur-slow:420ms;/* @kind other */--dur-ambient:6s;/* @kind other */
+}

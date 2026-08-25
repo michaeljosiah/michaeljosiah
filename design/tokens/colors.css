@@ -1,0 +1,65 @@
+:root{
+/* ── Base neutrals (deep night) ── */
+--ink-1000:#03060A;--ink-950:#05080D;--ink-900:#080B11;--ink-850:#0B0F16;--ink-800:#0E131B;
+--ink-750:#121821;--ink-700:#182029;--ink-600:#232C38;--ink-500:#33404F;--ink-400:#4C5A6B;
+--ink-300:#6E7C8C;--ink-200:#98A4B1;--ink-150:#BBC4CD;--ink-100:#DCE2E8;--ink-050:#F2F5F8;--white:#FFFFFF;
+
+/* ── Primary: molten gold ── */
+--gold-700:#8A5E17;--gold-600:#B37D22;--gold-500:#D99A3C;--gold-400:#E8A33D;--gold-300:#F0B85E;
+--gold-200:#F6CF92;--gold-100:#FBE7C6;
+
+/* ── Secondary: signal teal (AI / platform) ── */
+--teal-600:#1E8C82;--teal-500:#2FB3A6;--teal-400:#4FD1C5;--teal-300:#7FE3DA;
+
+/* ── Tertiary: deep violet (experiments) ── */
+--violet-500:#6C5CC4;--violet-400:#8B7FD6;--violet-300:#ADA4E6;
+
+/* ── Ember blue (data / code accents from imagery) ── */
+--ember-blue-500:#2C7FC9;--ember-blue-400:#4FA3E3;
+
+/* ── Semantic surfaces ── */
+--surface-page:var(--ink-1000);
+--surface-shell:var(--ink-950);
+--surface-panel:var(--ink-900);
+--surface-card:var(--ink-850);
+--surface-card-hover:var(--ink-800);
+--surface-raised:var(--ink-750);
+--surface-inset:var(--ink-1000);
+--surface-gold-wash:rgba(232,163,61,.08);
+--surface-teal-wash:rgba(79,209,197,.08);
+--surface-scrim:rgba(3,6,10,.72);
+
+/* ── Semantic text ── */
+--text-display:var(--white);
+--text-heading:var(--ink-050);
+--text-body:var(--ink-200);
+--text-muted:var(--ink-300);
+--text-faint:var(--ink-400);
+--text-accent:var(--gold-400);
+--text-on-gold:var(--ink-1000);
+--text-teal:var(--teal-400);
+--text-violet:var(--violet-400);
+
+/* ── Semantic lines ── */
+--line-hairline:rgba(255,255,255,.06);
+--line-soft:rgba(255,255,255,.10);
+--line-strong:rgba(255,255,255,.18);
+--line-gold:rgba(232,163,61,.38);
+--line-gold-strong:var(--gold-400);
+--rule-accent:var(--gold-400);
+
+/* ── Interactive ── */
+--action-primary:var(--gold-400);
+--action-primary-hover:var(--gold-300);
+--action-primary-press:var(--gold-500);
+--action-ghost-border:var(--line-soft);
+--action-ghost-border-hover:var(--line-gold);
+--focus-ring:rgba(232,163,61,.55);
+
+/* ── Category tag colors (project taxonomy) ── */
+--tag-story:var(--gold-400);
+--tag-ai:var(--teal-400);
+--tag-engineering:var(--ember-blue-400);
+--tag-experiment:var(--violet-400);
+--tag-life:var(--gold-200);
+}

@@ -1,0 +1,27 @@
+<!-- @dsCard group="Components" viewport="700x420" name="Sections" subtitle="Hero, section header, CTA banner, strips" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;padding:18px;background:var(--surface-page)}.lbl{font-family:var(--font-display);font-size:var(--fs-nano);letter-spacing:var(--ls-caps-wide);color:var(--text-faint);text-transform:uppercase;margin-bottom:10px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const NS=window.MichaelJosiahDesignSystem_bafdc6;
+
+const {PageHero,SectionHeader,CTABanner,CapabilityStrip,RoleList,Button,StatTriad}=NS;
+const A='../../assets/';
+function Demo(){return <div style={{display:'flex',flexDirection:'column',gap:20}}>
+ <div style={{margin:'-18px -18px 0'}}><PageHero minHeight={210} eyebrow="What I create" lines={['Ideas. Engineered.','Built to inspire.']} blurb="I build stories, platforms and systems that live at the intersection of imagination and engineering." image={A+'hero-portrait.png'}>
+  <div style={{display:'flex',gap:12,marginTop:6}}><Button>Explore my work</Button><Button variant="secondary" showIcon={false}>About me</Button></div>
+ </PageHero></div>
+ <SectionHeader eyebrow="Three worlds. One mission." title="What I create"/>
+ <CTABanner title="Have an idea worth building?" blurb="Let's connect and create something extraordinary." cta="Let's build together"/>
+ <div style={{display:'flex',gap:28,alignItems:'flex-start'}}>
+  <RoleList style={{flex:1}} roles={[{icon:'feather',title:'Storyteller',lines:['I craft narratives','that inspire']},{icon:'code',title:'Engineer',lines:['I build platforms','that empower']}]}/>
+  <StatTriad stats={[{value:'15+',label:'Years experience'},{value:'3',label:'Core pillars'}]}/>
+ </div>
+ <CapabilityStrip items={[{icon:'brain',label:'AI'},{icon:'cloud',label:'Cloud'},{icon:'code',label:'Code'},{icon:'layers',label:'Data'},{icon:'pen-tool',label:'Design'},{icon:'target',label:'Story'}]}/>
+</div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script></body></html>
